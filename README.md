@@ -1,11 +1,11 @@
-#sidirius/docker-lxde-vnc
+docker hub: mannk98/container-vnc-lxde
 
 Manual Build:
 --
-    git clone https://github.com/Sidirius/docker-lxde-vnc.git
-    cd docker-lxde-vnc
+    git clone https://github.com/huntelaar112/container-vnc.git
+    cd container-vnc
     ./build.sh
 
 Run:
 --
-    docker run -dt --name lxde_vnc -p 5900:5900 -p 5800:5800 -e passwd="*your_password_for_vnc*" sidirius/docker-lxde-vnc
+    docker run -idt --name container-vnc --hostname container-vnc -p 5900:5900 -p 5800:5800 -e passwd="your-pass-4-vnc" mannk98/container-vnc-lxde
