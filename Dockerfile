@@ -67,7 +67,7 @@ RUN /bin/dbus-uuidgen --ensure && \
         useradd ${USER} && usermod -aG sudo ${USER} \
         && 	echo ""${USER}" ALL=(ALL:ALL) NOPASSWD:ALL" >>/etc/sudoers
 
-WORKDIR ${HOME}
+WORKDIR /
 USER root
 
 RUN mkdir -p ${HOME}/.config/lxqt && \
