@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# vncpasswd form docker run -e
-# mkdir /var/run/sshd
-
 HOME='/home/mannk'
+
+# vncpasswd form docker run -e
+sudo mkdir /var/run/sshd
 
 [[ ! -f ${HOME}/.vnc/passwd ]] && {
   sudo mkdir ${HOME}/.vnc
