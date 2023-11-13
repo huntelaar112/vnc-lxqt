@@ -18,7 +18,7 @@ ENV bashScript="https://github.com/huntelaar112/bash-script.sh.git"
 RUN dpkg-divert --local --rename --add /sbin/init && ln -sf /bin/true /sbin/init
 
 #RUN sed -i "/^# deb.*multiverse/ s/^# //" /etc/apt/sources.list
-RUN echo 'deb http://deb.debian.org/debian/ bookworm main non-free-firmware \
+RUN /bin/bash && echo 'deb http://deb.debian.org/debian/ bookworm main non-free-firmware \
 deb-src http://deb.debian.org/debian/ bookworm main non-free-firmware \
 deb http://security.debian.org/debian-security bookworm-security main non-free-firmware \
 deb-src http://security.debian.org/debian-security bookworm-security main non-free-firmware \
@@ -65,10 +65,12 @@ RUN    apt update && apt upgrade -y && apt dist-upgrade -y \
 
 RUN /bin/dbus-uuidgen --ensure && \
         useradd ${USER} && usermod -aG sudo ${USER} \
-        && 	echo ""${USER}" ALL=(ALL:ALL) NOPASSWD:ALL" >>/etc/sudoers
+        && 	echo ""${USER}" ALL=(ALL:ALL) NOPASSWD:ALL" >>/etc/sudoers \
 
-WORKDIR /
-USER root
+RUN chown ${USER}:${USER} ${HOME}
+
+WORKDIR ${HOME}
+USER mannk
 
 RUN mkdir -p ${HOME}/.config/lxqt && \
         echo '[General]' >> ${HOME}/.config/lxqt/lxqt.conf && \
@@ -87,11 +89,11 @@ RUN mkdir -p ${HOME}/.config/lxqt && \
         echo 'apps\2\desktop=/usr/share/applications/pcmanfm-qt.desktop' >> ${HOME}/.config/lxqt/panel.conf && \
         echo 'apps\size=3' >> ${HOME}/.config/lxqt/panel.conf \
 
-ADD startup.sh /
-ADD supervisord.conf /
+ADD supervisord.conf ./
+ADD startup.sh ./
 
 EXPOSE 5800
 EXPOSE 5900
 EXPOSE 22
 
-ENTRYPOINT ["/startup.sh"]
+ENTRYPOINT ["/home/mannk/startup.sh"]
