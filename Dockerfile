@@ -30,7 +30,7 @@ deb-src http://deb.debian.org/debian/ bookworm-updates main non-free-firmware' >
 #      --mount=type=cache,target=/var/lib/apt,sharing=locked \
 #    \
 RUN    apt update && apt upgrade -y && apt dist-upgrade -y \
-    && apt-get install -y --no-install-recommends supervisor \
+    && apt-get install -y supervisor \
     xdg-utils dbus-x11 x11-utils \
     \
     gconf-service libasound2 libatk1.0-0 libc6 libcairo2 libcups2 libdbus-1-3 libexpat1 libfontconfig1 libgcc1 libgconf-2-4 libgdk-pixbuf2.0-0 \
