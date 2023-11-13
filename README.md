@@ -10,6 +10,7 @@ Run:
 --
    ./deploy vnc-lxqt "password-4-vnc"
 
+
     
     
    
