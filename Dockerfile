@@ -64,10 +64,8 @@ RUN    apt update && apt upgrade -y && apt dist-upgrade -y \
 #    && bash ./install.sh
 
 RUN /bin/dbus-uuidgen --ensure && \
-        useradd ${USER} && usermod -aG wheel ${USER} \
+        useradd ${USER} && usermod -aG sudo ${USER} \
         && 	echo ""${USER}" ALL=(ALL:ALL) NOPASSWD:ALL" >>/etc/sudoers
-
-COPY ./startup.sh ${HOME}
 
 WORKDIR ${HOME}
 USER mannk
@@ -89,6 +87,7 @@ RUN mkdir -p ${HOME}/.config/lxqt && \
         echo 'apps\2\desktop=/usr/share/applications/pcmanfm-qt.desktop' >> ${HOME}/.config/lxqt/panel.conf && \
         echo 'apps\size=3' >> ${HOME}/.config/lxqt/panel.conf \
 
+COPY ./startup.sh ${HOME}/startup.sh
 
 ADD startup.sh ${HOME}
 ADD supervisord.conf ${HOME}
