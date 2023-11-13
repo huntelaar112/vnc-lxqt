@@ -1,13 +1,16 @@
 #!/bin/bash
 
-mkdir /var/run/sshd
+# vncpasswd form docker run -e
+# mkdir /var/run/sshd
 
-[[ ! -f /root/.vnc/passwd ]] && {
+HOME='/home/mannk'
+
+[[ ! -f ${HOME}/.vnc/passwd ]] && {
   mkdir /root/.vnc
-  x11vnc -storepasswd $passwd /root/.vnc/passwd
+  x11vnc -storepasswd ${vncpasswd} ${HOME}/.vnc/passwd
 }
 
-/usr/bin/supervisord -c /supervisord.conf
+sudo supervisord -c ${HOME}/supervisord.conf
 
 while [ 1 ]; do
     /bin/bash
