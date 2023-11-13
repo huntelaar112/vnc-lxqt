@@ -96,4 +96,4 @@ EXPOSE 5800
 EXPOSE 5900
 EXPOSE 22
 
-ENTRYPOINT ["${HOME}/startup.sh"]
+ENTRYPOINT ["/home/mannk/startup.sh"]
