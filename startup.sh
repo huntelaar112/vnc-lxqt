@@ -6,7 +6,7 @@
 HOME='/home/mannk'
 
 [[ ! -f ${HOME}/.vnc/passwd ]] && {
-  mkdir /root/.vnc
+  mkdir ${HOME}/.vnc
   x11vnc -storepasswd ${vncpasswd} ${HOME}/.vnc/passwd
 }
 
