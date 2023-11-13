@@ -3,7 +3,7 @@ FROM debian:12.2
 LABEL maintainer="khacman98@gmail.com" \
       io.k8s.description="Headless VNC Container with LXQt Desktop manager" \
       io.k8s.display-name="Headless VNC Container based on Debian" \
-      io.openshift.expose-services="5900:xvnc" \
+      io.openshift.expose-services="5900:vnc" \
       io.openshift.tags="vnc, debian, lxqt" \
       io.openshift.non-scalable=true
 
@@ -87,7 +87,7 @@ RUN mkdir -p ${HOME}/.config/lxqt && \
         echo '[quicklaunch]' >> ${HOME}/.config/lxqt/panel.conf && \
         echo 'apps\1\desktop=/usr/share/applications/qterminal.desktop' >> ${HOME}/.config/lxqt/panel.conf && \
         echo 'apps\2\desktop=/usr/share/applications/pcmanfm-qt.desktop' >> ${HOME}/.config/lxqt/panel.conf && \
-        echo 'apps\size=3' >> ${HOME}/.config/lxqt/panel.conf \
+        echo 'apps\size=3' >> ${HOME}/.config/lxqt/panel.conf
 
 ADD --chown=${USER}:${USER} supervisord.conf ./
 ADD --chown=${USER}:${USER} startup.sh ./
