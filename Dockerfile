@@ -1,13 +1,19 @@
 FROM debian:12.2
-MAINTAINER mannk98 <khacman98@gmail.com>
+
+LABEL maintainer="khacman98@gmail.com" \
+      io.k8s.description="Headless VNC Container with LXQt Desktop manager" \
+      io.k8s.display-name="Headless VNC Container based on Debian" \
+      io.openshift.expose-services="5900:xvnc" \
+      io.openshift.tags="vnc, debian, lxqt" \
+      io.openshift.non-scalable=true
 
 ENV DEBIAN_FRONTEND noninteractive
-ENV HOME /root
+#ENV HOME /root
+ENV HOME=/home/mannk
+ENV bashScript="https://github.com/huntelaar112/bash-script.sh.git"
 
-WORKDIR /
 #keep, not update
 #RUN apt-mark hold initscripts udev plymouth mountall
-#
 RUN dpkg-divert --local --rename --add /sbin/init && ln -sf /bin/true /sbin/init
 
 #RUN sed -i "/^# deb.*multiverse/ s/^# //" /etc/apt/sources.list
@@ -30,9 +36,12 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     fonts-liberation libappindicator1 libnss3 lsb-release xdg-utils dbus-x11 x11-utils \
     \
     openssh-server sudo net-tools curl netcat-openbsd wget \
-    lxqt-core lxqt task-lxqt-desktop x11vnc xvfb screen \
-    chromium libreoffice fonts-wqy-microhei geany \
-    gzip htop nano lxterminal iproute2 ibus ca-certificates \
+    obconf-qt lxqt-about lxqt-config lxqt-globalkeys lxqt-notificationd \
+    lxqt-openssh-askpass lxqt-panel lxqt-policykit lxqt-qtplugin lxqt-runner \
+    lxqt-session pcmanfm-qt x11vnc xvfb screen \
+    chromium libreoffice fonts-wqy-microhei dejavu-sans-mono-fonts geany \
+    gzip htop nano lxterminal iproute2 ibus ca-certificates git \
+    \
     && apt-get autoclean \
     && apt-get autoremove \
     && rm -rf /var/lib/apt/lists/*
@@ -49,9 +58,41 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 #    && echo "deb [signed-by=/etc/apt/trusted.gpg.d/packages.mozilla.org.gpg] https://packages.mozilla.org/apt mozilla main" | sudo tee -a /etc/apt/sources.list.d/mozilla.list > /dev/null \
 #    && apt update && apt install firefox-nightly
 
-ADD startup.sh /
-ADD supervisord.conf /
+RUN /bin/dbus-uuidgen --ensure && \
+        useradd headless && \
+        echo "centos" | passwd --stdin root && \
+        echo "centos" | passwd --stdin headless && \
+        usermod -aG wheel headless
+
+COPY ./startup.sh ${HOME}
+
+WORKDIR ${HOME}
+USER mannk
+
+RUN mkdir -p ${HOME}/.config/lxqt && \
+        echo '[General]' >> ${HOME}/.config/lxqt/lxqt.conf && \
+        echo 'theme=KDE-Plasma' >> ${HOME}/.config/lxqt/lxqt.conf \
+        && \
+        echo 'Xcursor.theme: breeze_cursors' >> ${HOME}/.Xdefaults \
+        && \
+        mkdir -p ${HOME}/.config/pcmanfm-qt/lxqt && \
+        echo '[Desktop]' >> ${HOME}/.config/pcmanfm-qt/lxqt/settings.conf && \
+        echo 'Wallpaper=/usr/share/lxqt/wallpapers/kde-plasma.png' >> ${HOME}/.config/pcmanfm-qt/lxqt/settings.conf && \
+        echo 'WallpaperMode=stretch' >> ${HOME}/.config/pcmanfm-qt/lxqt/settings.conf \
+        && \
+        mkdir -p ${HOME}/.config/lxqt/ && \
+        echo '[quicklaunch]' >> ${HOME}/.config/lxqt/panel.conf && \
+        echo 'apps\1\desktop=/usr/share/applications/qterminal.desktop' >> ${HOME}/.config/lxqt/panel.conf && \
+        echo 'apps\2\desktop=/usr/share/applications/pcmanfm-qt.desktop' >> ${HOME}/.config/lxqt/panel.conf && \
+        echo 'apps\size=3' >> ${HOME}/.config/lxqt/panel.conf \
+
+#RUN git clone ${bashScript} && cd bash-script.sh && ./
+
+ADD startup.sh ${HOME}
+ADD supervisord.conf ${HOME}
+
 EXPOSE 5800
 EXPOSE 5900
 EXPOSE 22
-ENTRYPOINT ["/startup.sh"]
+
+ENTRYPOINT ["${HOME}/startup.sh"]
