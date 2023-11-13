@@ -67,7 +67,7 @@ RUN /bin/dbus-uuidgen --ensure && \
         useradd ${USER} && usermod -aG sudo ${USER} \
         && 	echo ""${USER}" ALL=(ALL:ALL) NOPASSWD:ALL" >>/etc/sudoers
 
-RUN chown ${USER}:${USER} ${HOME}
+RUN mkdir ${HOME} && chown ${USER}:${USER} ${HOME}
 
 WORKDIR ${HOME}
 USER mannk
