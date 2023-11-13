@@ -89,8 +89,8 @@ RUN mkdir -p ${HOME}/.config/lxqt && \
         echo 'apps\2\desktop=/usr/share/applications/pcmanfm-qt.desktop' >> ${HOME}/.config/lxqt/panel.conf && \
         echo 'apps\size=3' >> ${HOME}/.config/lxqt/panel.conf \
 
-ADD supervisord.conf ./
-ADD startup.sh ./
+ADD --chown=${USER}:${USER} supervisord.conf ./
+ADD --chown=${USER}:${USER} startup.sh ./
 
 EXPOSE 5800
 EXPOSE 5900
