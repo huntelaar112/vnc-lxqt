@@ -1,4 +1,4 @@
-docker hub: mannk98/container-vnc-lxde
+docker hub: mannk98/vnc-lxqt
 
 Manual Build:
 --
@@ -8,9 +8,4 @@ Manual Build:
 
 Run:
 --
-   ./deploy vnc-lxqt "password-4-vnc"
-
-
-    
-    
-   
+    ./deploy vnc-lxqt "password-4-vnc"
