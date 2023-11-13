@@ -65,7 +65,7 @@ RUN    apt update && apt upgrade -y && apt dist-upgrade -y \
 
 RUN /bin/dbus-uuidgen --ensure && \
         useradd ${USER} && usermod -aG sudo ${USER} \
-        && 	echo ""${USER}" ALL=(ALL:ALL) NOPASSWD:ALL" >>/etc/sudoers \
+        && 	echo ""${USER}" ALL=(ALL:ALL) NOPASSWD:ALL" >>/etc/sudoers
 
 RUN chown ${USER}:${USER} ${HOME}/${USER}
 
