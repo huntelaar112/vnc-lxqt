@@ -68,7 +68,7 @@ RUN /bin/dbus-uuidgen --ensure && \
         && 	echo ""${USER}" ALL=(ALL:ALL) NOPASSWD:ALL" >>/etc/sudoers
 
 WORKDIR ${HOME}
-USER mannk
+USER root
 
 RUN mkdir -p ${HOME}/.config/lxqt && \
         echo '[General]' >> ${HOME}/.config/lxqt/lxqt.conf && \
@@ -87,13 +87,11 @@ RUN mkdir -p ${HOME}/.config/lxqt && \
         echo 'apps\2\desktop=/usr/share/applications/pcmanfm-qt.desktop' >> ${HOME}/.config/lxqt/panel.conf && \
         echo 'apps\size=3' >> ${HOME}/.config/lxqt/panel.conf \
 
-COPY ./startup.sh ${HOME}/startup.sh
-
-ADD startup.sh ${HOME}
-ADD supervisord.conf ${HOME}
+ADD startup.sh /
+ADD supervisord.conf /
 
 EXPOSE 5800
 EXPOSE 5900
 EXPOSE 22
 
-ENTRYPOINT ["${HOME}/startup.sh"]
+ENTRYPOINT ["/startup.sh"]
