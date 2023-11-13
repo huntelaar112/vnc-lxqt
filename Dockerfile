@@ -34,7 +34,7 @@ RUN    apt update && apt upgrade -y && apt dist-upgrade -y \
     xdg-utils dbus-x11 x11-utils \
     \
     gnupg2 bmon openssh-server sudo net-tools curl netcat-openbsd wget \
-    openbox obconf-qt lxqt pcmanfm-qt x11vnc xvfb screen \
+    openbox obconf-qt lxde-core lxde-icon-theme pcmanfm-qt x11vnc xvfb screen \
     chromium libreoffice fonts-wqy-microhei geany \
     gzip htop nano lxterminal iproute2 ibus git ca-certificates\
     \
