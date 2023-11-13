@@ -10,7 +10,7 @@ sudo mkdir /var/run/sshd
   sudo x11vnc -storepasswd ${vncpasswd} /root/.vnc/passwd
 }
 
-sudo supervisord -c ${HOME}/supervisord.conf
+sudo supervisord -c /root/supervisord.conf
 
 while [ 1 ]; do
     /bin/bash
