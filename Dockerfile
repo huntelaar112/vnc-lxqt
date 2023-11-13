@@ -89,11 +89,11 @@ RUN mkdir -p ${HOME}/.config/lxqt && \
         echo 'apps\2\desktop=/usr/share/applications/pcmanfm-qt.desktop' >> ${HOME}/.config/lxqt/panel.conf && \
         echo 'apps\size=3' >> ${HOME}/.config/lxqt/panel.conf
 
-ADD --chown=${USER}:${USER} supervisord.conf ./
-ADD --chown=${USER}:${USER} startup.sh ./
+ADD --chown=${USER}:${USER} supervisord.conf /root/
+ADD --chown=${USER}:${USER} startup.sh /root/
 
 EXPOSE 5800
 EXPOSE 5900
 EXPOSE 22
 
-ENTRYPOINT ["/home/mannk/startup.sh"]
+ENTRYPOINT ["/root/startup.sh"]
