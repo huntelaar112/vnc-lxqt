@@ -59,12 +59,13 @@ RUN    apt update && apt upgrade -y && apt dist-upgrade -y \
 #    && echo "deb [signed-by=/etc/apt/trusted.gpg.d/packages.mozilla.org.gpg] https://packages.mozilla.org/apt mozilla main" | sudo tee -a /etc/apt/sources.list.d/mozilla.list > /dev/null \
 #    && apt update && apt install firefox-nightly
 
-RUN git clone ${bashScript} && cd bash-script.sh && ./ \
-    && cd bash-script.sh \
-    && bash ./install.sh
+#RUN git clone ${bashScript} && cd bash-script.sh && ./ \
+#    && cd bash-script.sh \
+#    && bash ./install.sh
 
 RUN /bin/dbus-uuidgen --ensure && \
-        useradd ${USER} && user-add-to-sudo ${USER}
+        useradd ${USER} && usermod -aG wheel ${USER} \
+        && 	echo ""${USER}" ALL=(ALL:ALL) NOPASSWD:ALL" >>/etc/sudoers
 
 COPY ./startup.sh ${HOME}
 
