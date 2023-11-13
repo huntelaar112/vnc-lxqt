@@ -9,6 +9,7 @@ LABEL maintainer="khacman98@gmail.com" \
 
 ENV DEBIAN_FRONTEND noninteractive
 #ENV HOME /root
+ENV USER mannk
 ENV HOME=/home/mannk
 ENV bashScript="https://github.com/huntelaar112/bash-script.sh.git"
 
@@ -24,16 +25,17 @@ deb-src http://security.debian.org/debian-security bookworm-security main non-fr
 deb http://deb.debian.org/debian/ bookworm-updates main non-free-firmware \
 deb-src http://deb.debian.org/debian/ bookworm-updates main non-free-firmware' > /etc/apt/sources.list
 
+#--no-install-recommends
 #RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 #      --mount=type=cache,target=/var/lib/apt,sharing=locked \
 #    \
 RUN    apt update && apt upgrade -y && apt dist-upgrade -y \
-    && apt-get install -y --no-install-recommends supervisor \
+    && apt-get install -y supervisor \
     xdg-utils dbus-x11 x11-utils \
     \
     gnupg2 bmon openssh-server sudo net-tools curl netcat-openbsd wget \
     openbox obconf-qt lxqt pcmanfm-qt x11vnc xvfb screen \
-    chromium libreoffice fonts-wqy-microhei dejavu-sans-mono-fonts geany \
+    chromium libreoffice fonts-wqy-microhei geany \
     gzip htop nano lxterminal iproute2 ibus git ca-certificates\
     \
     && apt-get autoclean \
@@ -57,11 +59,12 @@ RUN    apt update && apt upgrade -y && apt dist-upgrade -y \
 #    && echo "deb [signed-by=/etc/apt/trusted.gpg.d/packages.mozilla.org.gpg] https://packages.mozilla.org/apt mozilla main" | sudo tee -a /etc/apt/sources.list.d/mozilla.list > /dev/null \
 #    && apt update && apt install firefox-nightly
 
+RUN git clone ${bashScript} && cd bash-script.sh && ./ \
+    && cd bash-script.sh \
+    && bash ./install.sh
+
 RUN /bin/dbus-uuidgen --ensure && \
-        useradd headless && \
-        echo "centos" | passwd --stdin root && \
-        echo "centos" | passwd --stdin headless && \
-        usermod -aG wheel headless
+        useradd ${USER} && user-add-to-sudo ${USER}
 
 COPY ./startup.sh ${HOME}
 
@@ -85,7 +88,6 @@ RUN mkdir -p ${HOME}/.config/lxqt && \
         echo 'apps\2\desktop=/usr/share/applications/pcmanfm-qt.desktop' >> ${HOME}/.config/lxqt/panel.conf && \
         echo 'apps\size=3' >> ${HOME}/.config/lxqt/panel.conf \
 
-#RUN git clone ${bashScript} && cd bash-script.sh && ./
 
 ADD startup.sh ${HOME}
 ADD supervisord.conf ${HOME}
