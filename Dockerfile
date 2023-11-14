@@ -61,15 +61,18 @@ RUN wget -q https://packages.mozilla.org/apt/repo-signing-key.gpg -O- | gpg --de
     && echo "deb [signed-by=/etc/apt/trusted.gpg.d/packages.mozilla.org.gpg] https://packages.mozilla.org/apt mozilla main" | sudo tee -a /etc/apt/sources.list.d/mozilla.list > /dev/null \
     && apt update && apt install firefox-nightly
 
+# create user and add to sudo
 RUN /bin/dbus-uuidgen --ensure && \
         useradd -m -p "${USERPASS}" ${USER} && usermod -aG sudo ${USER} \
         && 	echo ""${USER}" ALL=(ALL:ALL) NOPASSWD:ALL" >>/etc/sudoers && chown ${USER}:${USER} ${HOME}
 
+#change datetime to gmt+7
 RUN cp /etc/localtime /etc/localtime_backup && sudo ln -sf /usr/share/zoneinfo/Asia/Ho_Chi_Minh /etc/localtime
 
 WORKDIR ${HOME}
 USER mannk
 
+# config lxqt
 RUN mkdir -p ${HOME}/.config/lxqt && \
     echo $'[General] \n\
 theme=KDE-Plasma \n\
@@ -90,6 +93,7 @@ style=Windows' >> ${HOME}/.config/lxqt/lxqt.conf \
         echo 'apps\2\desktop=/usr/share/applications/pcmanfm-qt.desktop' >> ${HOME}/.config/lxqt/panel.conf && \
         echo 'apps\size=3' >> ${HOME}/.config/lxqt/panel.conf
 
+# config auto start in lxqt session
 RUN mkdir -p ${HOME}/.config/autostart && \
     echo $'[Desktop Entry] \n\
           Exec=ibus start & \n\
@@ -106,10 +110,12 @@ RUN mkdir -p ${HOME}/.config/autostart && \
           Version=1.0 \n\
           X-LXQt-Need-Tray=true' >${HOME}/.config/autostart/lxterminal.desktop
 
+# chown to allow mannk user start supervisord
 RUN mkdir .startup_conf
 ADD --chown=${USER}:${USER} supervisord.conf ${HOME}/.startup_conf/
 ADD --chown=${USER}:${USER} startup.sh ${HOME}/.startup_conf/
 
+# install bash libs
 RUN mkdir bash && cd bash && git clone https://github.com/huntelaar112/bash-script.sh.git && cd bash-script.sh && sudo bash ./install.sh && cd
 
 EXPOSE 5800
