@@ -75,8 +75,11 @@ WORKDIR ${HOME}
 USER mannk
 
 RUN mkdir -p ${HOME}/.config/lxqt && \
-        echo '[General]' >> ${HOME}/.config/lxqt/lxqt.conf && \
-        echo 'theme=KDE-Plasma' >> ${HOME}/.config/lxqt/lxqt.conf \
+    echo $'[General] \n\
+theme=KDE-Plasma \n\
+\n\
+[Qt]\n\
+style=Windows' >> ${HOME}/.config/lxqt/lxqt.conf \
         && \
         echo 'Xcursor.theme: breeze_cursors' >> ${HOME}/.Xdefaults \
         && \
