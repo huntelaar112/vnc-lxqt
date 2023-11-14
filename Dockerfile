@@ -61,10 +61,6 @@ RUN wget -q https://packages.mozilla.org/apt/repo-signing-key.gpg -O- | gpg --de
     && echo "deb [signed-by=/etc/apt/trusted.gpg.d/packages.mozilla.org.gpg] https://packages.mozilla.org/apt mozilla main" | sudo tee -a /etc/apt/sources.list.d/mozilla.list > /dev/null \
     && apt update && apt install firefox-nightly
 
-#RUN git clone ${bashScript} && cd bash-script.sh && ./ \
-#    && cd bash-script.sh \
-#    && bash ./install.sh
-
 RUN /bin/dbus-uuidgen --ensure && \
         useradd -m -p "${USERPASS}" ${USER} && usermod -aG sudo ${USER} \
         && 	echo ""${USER}" ALL=(ALL:ALL) NOPASSWD:ALL" >>/etc/sudoers && chown ${USER}:${USER} ${HOME}
