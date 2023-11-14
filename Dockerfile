@@ -10,19 +10,21 @@ LABEL maintainer="khacman98@gmail.com" \
 ENV DEBIAN_FRONTEND noninteractive
 #ENV HOME /root
 ENV USER mannk
+ENV USERPASS='$1$xyz$eETluLJoxfGBmHCxo.4Ia1'
 ENV HOME=/home/mannk
 ENV bashScript="https://github.com/huntelaar112/bash-script.sh.git"
 
+SHELL ["/bin/bash", "-c"]
 #keep, not update
 #RUN apt-mark hold initscripts udev plymouth mountall
 RUN dpkg-divert --local --rename --add /sbin/init && ln -sf /bin/true /sbin/init
 
 #RUN sed -i "/^# deb.*multiverse/ s/^# //" /etc/apt/sources.list
-RUN /bin/bash && echo 'deb http://deb.debian.org/debian/ bookworm main non-free-firmware \
-deb-src http://deb.debian.org/debian/ bookworm main non-free-firmware \
-deb http://security.debian.org/debian-security bookworm-security main non-free-firmware \
-deb-src http://security.debian.org/debian-security bookworm-security main non-free-firmware \
-deb http://deb.debian.org/debian/ bookworm-updates main non-free-firmware \
+RUN /bin/bash && echo $'deb http://deb.debian.org/debian/ bookworm main non-free-firmware \n\
+deb-src http://deb.debian.org/debian/ bookworm main non-free-firmware \n\
+deb http://security.debian.org/debian-security bookworm-security main non-free-firmware \n\
+deb-src http://security.debian.org/debian-security bookworm-security main non-free-firmware \n\
+deb http://deb.debian.org/debian/ bookworm-updates main non-free-firmware \n\
 deb-src http://deb.debian.org/debian/ bookworm-updates main non-free-firmware' > /etc/apt/sources.list
 
 #--no-install-recommends
@@ -41,7 +43,7 @@ RUN    apt update && apt upgrade -y && apt dist-upgrade -y \
     gnupg2 bmon openssh-server sudo net-tools curl netcat-openbsd wget \
     openbox obconf-qt lxqt pcmanfm-qt x11vnc xvfb screen \
     chromium libreoffice fonts-wqy-microhei geany \
-    gzip htop nano lxterminal iproute2 ibus git ca-certificates\
+    gzip htop nano lxterminal iproute2 ibus git ca-certificates ibus-unikey \
     \
     && apt-get autoclean \
     && apt-get autoremove \
@@ -64,10 +66,10 @@ RUN wget -q https://packages.mozilla.org/apt/repo-signing-key.gpg -O- | gpg --de
 #    && bash ./install.sh
 
 RUN /bin/dbus-uuidgen --ensure && \
-        useradd ${USER} && usermod -aG sudo ${USER} \
-        && 	echo ""${USER}" ALL=(ALL:ALL) NOPASSWD:ALL" >>/etc/sudoers
+        useradd -m -p "${USERPASS}" ${USER} && usermod -aG sudo ${USER} \
+        && 	echo ""${USER}" ALL=(ALL:ALL) NOPASSWD:ALL" >>/etc/sudoers && chown ${USER}:${USER} ${HOME}
 
-RUN mkdir ${HOME} && chown ${USER}:${USER} ${HOME}
+RUN cp /etc/localtime /etc/localtime_backup && sudo ln -sf /usr/share/zoneinfo/Asia/Ho_Chi_Minh /etc/localtime
 
 WORKDIR ${HOME}
 USER mannk
@@ -89,9 +91,27 @@ RUN mkdir -p ${HOME}/.config/lxqt && \
         echo 'apps\2\desktop=/usr/share/applications/pcmanfm-qt.desktop' >> ${HOME}/.config/lxqt/panel.conf && \
         echo 'apps\size=3' >> ${HOME}/.config/lxqt/panel.conf
 
+RUN mkdir -p ${HOME}/.config/autostart && \
+    echo $'[Desktop Entry] \n\
+          Exec=ibus start & \n\
+          Name=ibusd  \n\
+          OnlyShowIn=LXQt; \n\
+          Type=Application \n\
+          Version=1.0 \n\
+          X-LXQt-Need-Tray=true' >${HOME}/.config/autostart/ibusd.desktop && \
+    echo $'[Desktop Entry] \n\
+          Exec=lxterminal \n\
+          Name=lxterminal \n\
+          OnlyShowIn=LXQt; \n\
+          Type=Application \n\
+          Version=1.0 \n\
+          X-LXQt-Need-Tray=true' >${HOME}/.config/autostart/lxterminal.desktop
+
 RUN mkdir .startup_conf
 ADD --chown=${USER}:${USER} supervisord.conf ${HOME}/.startup_conf/
 ADD --chown=${USER}:${USER} startup.sh ${HOME}/.startup_conf/
+
+RUN mkdir bash && cd bash && git clone https://github.com/huntelaar112/bash-script.sh.git && cd bash-script.sh && sudo bash ./install.sh && cd
 
 EXPOSE 5800
 EXPOSE 5900
