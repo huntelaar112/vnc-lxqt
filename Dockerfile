@@ -41,17 +41,17 @@ RUN    apt update && apt upgrade -y && apt dist-upgrade -y \
     fonts-liberation libappindicator1 libnss3 lsb-release \
     \
     gnupg2 bmon openssh-server sudo net-tools curl netcat-openbsd wget \
-    openbox obconf-qt lxqt pcmanfm-qt x11vnc xvfb screen \
-    chromium libreoffice fonts-wqy-microhei geany \
-    gzip htop nano lxterminal iproute2 ibus git ca-certificates ibus-unikey \
+    lxqt pcmanfm-qt x11vnc xvfb screen \
+    libreoffice fonts-wqy-microhei geany flameshot blueman telegram-desktop chromium \
+    gzip htop iotop nano lxterminal iproute2 ibus git ca-certificates ibus-unikey mingw-w64 \
     \
     && apt-get autoclean \
     && apt-get autoremove \
     && rm -rf /var/lib/apt/lists/*
 
-
+# openbox obconf-qt chromium
 # lxde-core lxde-icon-theme
-# install gg chrome
+
 #RUN curl -fSsL https://dl.google.com/linux/linux_signing_key.pub | sudo gpg --dearmor | sudo tee /usr/share/keyrings/google-chrome.gpg >> /dev/null \
 #    && echo deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome.gpg] http://dl.google.com/linux/chrome/deb/ stable main | sudo tee /etc/apt/sources.list.d/google-chrome.list \
 #    && apt update &&  apt install google-chrome-stable -y
