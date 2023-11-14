@@ -20,11 +20,11 @@ SHELL ["/bin/bash", "-c"]
 RUN dpkg-divert --local --rename --add /sbin/init && ln -sf /bin/true /sbin/init
 
 #RUN sed -i "/^# deb.*multiverse/ s/^# //" /etc/apt/sources.list
-RUN /bin/bash && echo $'deb http://deb.debian.org/debian/ bookworm main non-free-firmware \n\
+RUN /bin/bash && echo $'#deb http://deb.debian.org/debian/ bookworm main non-free-firmware \n\
 deb-src http://deb.debian.org/debian/ bookworm main non-free-firmware \n\
 deb http://security.debian.org/debian-security bookworm-security main non-free-firmware \n\
 deb-src http://security.debian.org/debian-security bookworm-security main non-free-firmware \n\
-deb http://deb.debian.org/debian/ bookworm-updates main non-free-firmware \n\
+#deb http://deb.debian.org/debian/ bookworm-updates main non-free-firmware \n\
 deb-src http://deb.debian.org/debian/ bookworm-updates main non-free-firmware' > /etc/apt/sources.list
 
 #--no-install-recommends
