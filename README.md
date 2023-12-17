@@ -8,4 +8,4 @@ Manual Build:
 
 Run:
 --
-    ./deploy vnc-lxqt "password-4-vnc"
+    ./deploy.sh vnc-lxqt "password-4-vnc"
