@@ -63,7 +63,7 @@ RUN wget -q https://packages.mozilla.org/apt/repo-signing-key.gpg -O- | gpg --de
 
 # create user and add to sudo
 RUN /bin/dbus-uuidgen --ensure && \
-        useradd -m -p "${USERPASS}" ${USER} && usermod -aG sudo ${USER} \
+        useradd -m -s /bin/bash -p "${USERPASS}" ${USER} && usermod -aG sudo ${USER} \
         && 	echo ""${USER}" ALL=(ALL:ALL) NOPASSWD:ALL" >>/etc/sudoers && chown ${USER}:${USER} ${HOME}
 
 #change datetime to gmt+7
